@@ -2,7 +2,7 @@ import csv # för att kunna läsa och skriva i csv filer
 import random # för att kunna generera slumpmässiga ID
  
 
-USERS_FILE = "användare.csv" # filnamn för att lagra användardata
+USERS_FILE = "users.csv" # filnamn för att lagra användardata
 def load_users():
 
     users = [] 
