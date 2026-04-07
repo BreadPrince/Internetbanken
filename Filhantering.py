@@ -17,7 +17,7 @@ def load_users():
 
 
 def save_users(users):
-    with open(USERS_FILE, 'w', newline='') as file: # öppna filen i skrivläge w
+    with open(USERS_FILE, 'w', newline='', encoding='utf-8') as file: # öppna filen i skrivläge w
         fieldnames = ["user_id", "first_name", "last_name", "password"]
         writer = csv.DictWriter(file, fieldnames=fieldnames) 
         writer.writeheader() 
