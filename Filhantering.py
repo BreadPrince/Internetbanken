@@ -7,7 +7,7 @@ def load_users():
 
     users = [] 
     try:
-        with open(USERS_FILE) as file: 
+        with open(USERS_FILE, encoding='utf-8') as file: 
             reader = csv.DictReader(file) 
             for row in reader: 
                 users.append(row) 
