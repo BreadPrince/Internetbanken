@@ -1,60 +1,59 @@
-import Filhantering as filhantering  # modul för användare och inlogg
-# as filhantering behövs pga stort F på filnamnet
-import accounts # modul för kontotyper och saldon
+import Filhantering as filhantering  # Modul för användare och inlogg
+import accounts # Modul för kontotyper och saldon
 
-def user_dashboard(user_id):
+def user_dashboard(userId):
     """Meny för inloggad användare"""
     while True:
-        print(f"\nInloggad som: {user_id}")
+        print(f"\nInloggad som: {userId}")
         print("1. Se konton och saldo")
         print("2. Öppna nytt konto")
         print("3. Insättning och uttag")
         print("4. Visa grafer")
         print("5. Logga ut")
         
-        val = input("Välj ett alternativ: ")
+        userChoice = input("Välj ett alternativ: ")
         
-        if val == "1":
-            # hämtar data från accounts.py
-            user_accounts = accounts.get_accounts(user_id)
-            if not user_accounts:
+        if userChoice == "1":
+            # Hämtar data från accounts.py
+            userAccounts = accounts.get_accounts(userId)
+            if not userAccounts:
                 print("Inga aktiva konton hittades")
             else:
-                for acc in user_accounts:
-                    # skriver ut varje konto på egna rader med skilje-streck emellan
+                for account in userAccounts:
+                    # Skriver ut varje konto på egna rader med skilje-streck emellan
                     print("-" * 20)
-                    print(f"Konto: {acc['account_type']}")
-                    print(f"Saldo: {acc['balance']} kr")
+                    print(f"Konto: {account['account_type']}")
+                    print(f"Saldo: {account['balance']} kr")
                 print("-" * 20)
         
-        elif val == "2":
-            print("1. Debitkonto") # konstant ränta
+        elif userChoice == "2":
+            print("1. Debitkonto")
             print("2. Sparkonto")
-            print("3. Aktiefondkonto") # slumpad ränta
-            typ_val = input("Välj typ: ")
+            print("3. Aktiefondkonto")
+            typeChoice = input("Välj typ: ")
             
-            # matchar användarens val med rätt kontotyp
-            if typ_val == "1": acc_type = "Debitkonto"
-            elif typ_val == "2": acc_type = "Sparkonto"
-            elif typ_val == "3": acc_type = "Aktiefondkonto"
+            # Matchar användarens val med rätt kontotyp
+            if typeChoice == "1": accountType = "Debitkonto"
+            elif typeChoice == "2": accountType = "Sparkonto"
+            elif typeChoice == "3": accountType = "Aktiefondkonto"
             else:
                 print("Ogiltigt val, inget konto skapades")
                 continue
             
-            accounts.create_account(user_id, acc_type, 0)
-            print(f"{acc_type} har öppnats")
+            accounts.create_account(userId, accountType, 0)
+            print(f"{accountType} har öppnats")
             
-        elif val == "3":
-            # updaterar när någon skrivit denna delen av koden
+        elif userChoice == "3":
+            # Updaterar när någon skrivit denna delen av koden
             print("Den här funktionen är under utveckling")
             pass
             
-        elif val == "4":
-            # updaterar när någon skrivit denna delen av koden
+        elif userChoice == "4":
+            # Updaterar när någon skrivit denna delen av koden
             print("Den här funktionen (graferna) är under utveckling")
             pass
             
-        elif val == "5":
+        elif userChoice == "5":
             print("Loggar ut")
             break
         else:
@@ -68,41 +67,40 @@ def main_menu():
         print("2. Skapa konto")
         print("3. Avsluta")
         
-        val = input("Välj ett alternativ: ")
+        userChoice = input("Välj ett alternativ: ")
         
-        if val == "1":
-            u_id = input("Ange användar-id: ")
-            pwd = input("Ange lösenord: ")
+        if userChoice == "1":
+            userId = input("Ange användar-id: ")
+            password = input("Ange lösenord: ")
             
-            # anropar validering i Filhantering.py
-            if filhantering.check_login(u_id, pwd):
+            # Anropar validering i Filhantering.py
+            if filhantering.check_login(userId, password):
                 print("Inloggning lyckades")
-                user_dashboard(u_id)
+                user_dashboard(userId)
             else:
                 print("Felaktigt id eller lösenord")
                 
-        elif val == "2":
-            f_name = input("Förnamn: ")
-            l_name = input("Efternamn: ")
-            pwd = input("Välj lösenord: ")
+        elif userChoice == "2":
+            firstName = input("Förnamn: ")
+            lastName = input("Efternamn: ")
+            password = input("Välj lösenord: ")
             
-            # skapar användare och return id
-            new_id = filhantering.create_user(f_name, l_name, pwd)
+            # Skapar användare och return id
+            newId = filhantering.create_user(firstName, lastName, password)
             
-            # skapar ett debitkonto som default vid registrering, ändrar ksk sen
-            # 
-            accounts.create_account(new_id, "Debitkonto", 0)
+            # Skapar ett debitkonto som default vid registrering
+            accounts.create_account(newId, "Debitkonto", 0)
             
             print(f"\nNytt konto skapat")
-            print(f"Ditt användar-id är: {new_id}")
+            print(f"Ditt användar-id är: {newId}")
             print("Spara ID:t för framtida inloggning")
 
-        elif val == "3":
+        elif userChoice == "3":
             print("Tack för idag")
             break
         else:
             print("Ogiltigt val, försök igen")
 
 if __name__ == "__main__":
-    # startar menyn endast om filen körs direkt och inte vid import
+    # Startar menyn endast om filen körs direkt och inte vid import
     main_menu()
