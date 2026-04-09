@@ -58,3 +58,18 @@ def check_login(user_id, password):
             return True 
     return False 
 
+def validate_password(password):
+    if len(password) < 6:
+        return "too_short"
+    if len(password) > 10:
+        return "too_long"
+
+    bokstav = any(c.isalpha() for c in password)
+    siffra = any(c.isdigit() for c in password)
+
+    if not bokstav:
+        return "ingen_bokstav"
+    if not siffra:
+        return "ingen_siffra"
+
+    return "valid"
