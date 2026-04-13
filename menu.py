@@ -1,5 +1,6 @@
 import Filhantering as filhantering  # Modul för användare och inlogg
 import accounts # Modul för kontotyper och saldon
+import logic # Modul för berävningar
 
 def user_dashboard(userId):
     """Meny för inloggad användare"""
@@ -29,6 +30,7 @@ def user_dashboard(userId):
                 print("-" * 20)
         
         elif userChoice == "2":
+            print(f"\nÖppna nytt konto")
             print("1. Debitkonto")
             print("2. Sparkonto")
             print("3. Aktiefondkonto")
@@ -42,8 +44,22 @@ def user_dashboard(userId):
                 print("Ogiltigt val, inget konto skapades")
                 continue
             
-            accounts.create_account(userId, accountType, 0)
-            print(f"{accountType} har öppnats")
+            # ska ta bort följande rad om vi ska implementera en maxgräns på 3 konton
+            # accounts.create_account(userId, accountType, 0)
+
+            # ska göra följande del aktiv om vi ska implementera en maxgräns på 3 konton
+            result = accounts.create_account(userId, accountType, 0)
+            if result == "success":
+                print("ett {accountType} har öppnats")
+            elif result == "limit":
+                print("du har redan nått maxantalet på 3 konton")
+            elif result == "duplicate":
+                print("du har redan ett {accountType}")
+            elif result =="invalid":
+                print("ogiltigkontotyp")
+                
+            # ska ta bort följande rad om vi ska implementera en maxgräns på 3 konton
+            # print(f"{accountType} har öppnats")
             
         elif userChoice == "3":
             # Updaterar när någon skrivit denna delen av koden
@@ -95,13 +111,13 @@ def main_menu():
                     print("Lösenord godkänt.Spara det för framtida inloggning")
                     break # loopen bryts endast när status är valid
                 elif status == "too_short":
-                    print("Lösenord för kort")
+                    print("Lösenordet är för kort")
                 elif status == "too_long":
                     print("Lösenordet är för långt")
                 elif status == "ingen_bokstav":
-                    print("LÖsenordet måste innehålla minst en bokstav")
+                    print("Lösenordet måste innehålla minst en bokstav")
                 elif status == "ingen_siffra":
-                    print("LÖsenordet måste innehålla minst en siffra")
+                    print("Lösenordet måste innehålla minst en siffra")
 
             # Skapar användare och hämtar unikt id
             newId = filhantering.create_user(firstName, lastName, password)
