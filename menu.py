@@ -14,6 +14,8 @@ def user_dashboard(userId):
         userChoice = input("Välj ett alternativ: ")
         
         if userChoice == "1":
+            print(f"\nDina aktiva konton")
+
             # Hämtar data från accounts.py
             userAccounts = accounts.get_accounts(userId)
             if not userAccounts:
@@ -62,7 +64,7 @@ def user_dashboard(userId):
 def main_menu():
     """Startmeny för programmet"""
     while True:
-        print("\nVälkommen till internetbanken")
+        print("\nVälkommen till din internetbank")
         print("1. Logga in")
         print("2. Skapa konto")
         print("3. Avsluta")
@@ -83,9 +85,25 @@ def main_menu():
         elif userChoice == "2":
             firstName = input("Förnamn: ")
             lastName = input("Efternamn: ")
-            password = input("Välj lösenord: ")
-            
-            # Skapar användare och return id
+
+            while True:
+                password = input("Välj lösenord (6-10 tecken, minst 1 bokstav, och 1 siffra): ")
+                # Anropar funktionen validate_password från Filhantering.py:
+                status = filhantering.validate_password(password)
+
+                if status == "valid":
+                    print("Lösenord godkänt.Spara det för framtida inloggning")
+                    break # loopen bryts endast när status är valid
+                elif status == "too_short":
+                    print("Lösenord för kort")
+                elif status == "too_long":
+                    print("Lösenordet är för långt")
+                elif status == "ingen_bokstav":
+                    print("LÖsenordet måste innehålla minst en bokstav")
+                elif status == "ingen_siffra":
+                    print("LÖsenordet måste innehålla minst en siffra")
+
+            # Skapar användare och hämtar unikt id
             newId = filhantering.create_user(firstName, lastName, password)
             
             # Skapar ett debitkonto som default vid registrering
