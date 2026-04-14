@@ -56,9 +56,58 @@ def user_dashboard(userId):
                 print("Fel: Ogiltig kontotyp")
             
         elif userChoice == "3":
-            # Updaterar när någon skrivit denna delen av koden
-            print("Den här funktionen är under utveckling")
-            pass
+            userAccounts = accounts.get_accounts(userId)
+
+            if not userAccounts:
+                print("Du har inga konton")
+                continue
+
+            # Visa konton
+            print("\nDina konton:")
+            for i, konto in enumerate(userAccounts):
+                print(f"{i + 1}. {konto['account_type']} - {konto['balance']} kr")
+
+            try:
+                kontoVal = int(input("Välj konto: ")) - 1
+
+                if kontoVal < 0 or kontoVal >= len(userAccounts):
+                    print("Ogiltigt kontoval")
+                    continue
+
+                valtKonto = userAccounts[kontoVal]
+            except:
+                print("Ogiltigt val")
+                continue
+
+            print("\n1. Insättning")
+            print("2. Uttag")
+            val = input("Välj: ")
+
+            try:
+                belopp = float(input("Ange belopp: "))
+            except:
+                print("Felaktigt belopp")
+                continue
+
+            konto = float(valtKonto["balance"])
+
+            # Anropa logic funktion
+            if val == "1":
+                nyttSaldo = logic.insattning(konto, belopp)
+            elif val == "2":
+                nyttSaldo = logic.uttag(konto, belopp)
+            else:
+                print("Ogiltigt val")
+                continue
+
+            # Uppdatera saldo
+            valtKonto["balance"] = nyttSaldo
+
+            # Spara ändringen
+            accounts.save_accounts(userAccounts)
+
+            print("\nTransaktion genomförd")
+            print(f"Nytt saldo: {round(nyttSaldo, 2)} kr")
             
         elif userChoice == "4":
             # Updaterar när någon skrivit denna delen av koden
