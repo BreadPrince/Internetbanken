@@ -1,5 +1,6 @@
 import Filhantering as filhantering  # Modul för användare och inlogg
 import accounts # Modul för kontotyper och saldon
+import logic # Modul för beräkningar
 
 def user_dashboard(userId):
     """Meny för inloggad användare"""
@@ -11,9 +12,11 @@ def user_dashboard(userId):
         print("4. Visa grafer")
         print("5. Logga ut")
         
-        userChoice = input("Välj ett alternativ: ")
+        userChoice = input("Välj ett alternativ (1-5): ")
         
         if userChoice == "1":
+            print(f"\nDina aktiva konton")
+
             # Hämtar data från accounts.py
             userAccounts = accounts.get_accounts(userId)
             if not userAccounts:
@@ -27,10 +30,11 @@ def user_dashboard(userId):
                 print("-" * 20)
         
         elif userChoice == "2":
+            print(f"\nÖppna nytt konto")
             print("1. Debitkonto")
             print("2. Sparkonto")
             print("3. Aktiefondkonto")
-            typeChoice = input("Välj typ: ")
+            typeChoice = input("Välj typ (1-3): ")
             
             # Matchar användarens val med rätt kontotyp
             if typeChoice == "1": accountType = "Debitkonto"
@@ -40,8 +44,16 @@ def user_dashboard(userId):
                 print("Ogiltigt val, inget konto skapades")
                 continue
             
-            accounts.create_account(userId, accountType, 0)
-            print(f"{accountType} har öppnats")
+            # Ska behålla följande del aktiv om vi ska implementera en maxgräns på 3 konton:
+            result = accounts.create_account(userId, accountType, 0)
+            if result == "success":
+                print(f"Ett {accountType} har öppnats")
+            elif result == "limit":
+                print("Fel: Du har redan nått maxantalet på 3 konton")
+            elif result == "duplicate":
+                print(f"Fel: Du har redan ett {accountType}")
+            elif result =="invalid":
+                print("Fel: Ogiltig kontotyp")
             
         elif userChoice == "3":
             # Updaterar när någon skrivit denna delen av koden
@@ -62,12 +74,12 @@ def user_dashboard(userId):
 def main_menu():
     """Startmeny för programmet"""
     while True:
-        print("\nVälkommen till internetbanken")
+        print("\nVälkommen till din internetbank")
         print("1. Logga in")
         print("2. Skapa konto")
         print("3. Avsluta")
         
-        userChoice = input("Välj ett alternativ: ")
+        userChoice = input("Välj ett alternativ (1-3): ")
         
         if userChoice == "1":
             userId = input("Ange användar-id: ")
@@ -83,20 +95,36 @@ def main_menu():
         elif userChoice == "2":
             firstName = input("Förnamn: ")
             lastName = input("Efternamn: ")
-            password = input("Välj lösenord: ")
-            
-            # Skapar användare och return id
+
+            while True:
+                password = input("Välj lösenord (6-10 tecken, minst 1 bokstav, och 1 siffra): ")
+                # Anropar funktionen validate_password från Filhantering.py:
+                status = filhantering.validate_password(password)
+
+                if status == "valid":
+                    print("Lösenord godkänt. Spara det för framtida inloggning")
+                    break # loopen bryts endast när status är valid
+                elif status == "too_short":
+                    print("Fel: Lösenordet är för kort")
+                elif status == "too_long":
+                    print("Fel: Lösenordet är för långt")
+                elif status == "ingen_bokstav":
+                    print("Fel: Lösenordet måste innehålla minst en bokstav")
+                elif status == "ingen_siffra":
+                    print("Fel: Lösenordet måste innehålla minst en siffra")
+
+            # Skapar användare och hämtar unikt id
             newId = filhantering.create_user(firstName, lastName, password)
             
             # Skapar ett debitkonto som default vid registrering
             accounts.create_account(newId, "Debitkonto", 0)
             
-            print(f"\nNytt konto skapat")
+            print(f"\nNytt konto skapat. Du kan nu logga in.")
             print(f"Ditt användar-id är: {newId}")
             print("Spara ID:t för framtida inloggning")
 
         elif userChoice == "3":
-            print("Tack för idag")
+            print("Avslutar programmet. Tack för idag")
             break
         else:
             print("Ogiltigt val, försök igen")
