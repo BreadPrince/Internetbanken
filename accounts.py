@@ -9,6 +9,7 @@ def load_accounts():
         with open(ACCOUNTS_FILE) as file:
             reader = csv.DictReader(file)
             for row in reader:
+                row["balance"] = float(row["balance"])
                 accounts.append(row)
     except FileNotFoundError:
         return []
@@ -43,7 +44,7 @@ def create_account(user_id, account_type, balance):
     new_account = {
         "user_id": user_id,
         "account_type": account_type,
-        "balance": balance
+        "balance": float(balance)
     }
 
     accounts.append(new_account)
