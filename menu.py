@@ -44,9 +44,6 @@ def user_dashboard(userId):
                 print("Ogiltigt val, inget konto skapades")
                 continue
             
-            # Ska ta bort följande rad om vi ska implementera en maxgräns på 3 konton:
-            # accounts.create_account(userId, accountType, 0)
-
             # Ska behålla följande del aktiv om vi ska implementera en maxgräns på 3 konton:
             result = accounts.create_account(userId, accountType, 0)
             if result == "success":
@@ -57,9 +54,6 @@ def user_dashboard(userId):
                 print(f"Fel: Du har redan ett {accountType}")
             elif result =="invalid":
                 print("Fel: Ogiltig kontotyp")
-                
-            # Ska ta bort följande rad om vi ska implementera en maxgräns på 3 konton:
-            # print(f"{accountType} har öppnats")
             
         elif userChoice == "3":
             # Updaterar när någon skrivit denna delen av koden
