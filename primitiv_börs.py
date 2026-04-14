@@ -5,6 +5,9 @@ from numpy import random
 import matplotlib.pyplot as plt
 import yfinance as yf
 import pandas as pd
+from curl_cffi import requests
+session = requests.Session(impersonate="chrome")
+
 
 bgColor = 'darkslategray'
 
@@ -27,7 +30,7 @@ def simulate_stock():
             simNumber = int(simNumber)
             yearsData = int(yearsData)
             # hämtar prisdata från OMX index från Yahoo Finance
-            prices = yf.download(stockTicker, period=f'{yearsData}y', interval="1d", threads = False)['Close']
+            prices = yf.download(stockTicker, period=f'{yearsData}y', interval="1d", threads = False, session = session)['Close']
             # ifall data finns och input är korrekt, bryt
             if not prices.empty and isinstance(simHorizon, int)  and isinstance(simNumber, int):
                 break
