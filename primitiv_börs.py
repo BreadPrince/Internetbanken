@@ -27,7 +27,7 @@ def simulate_stock():
             simNumber = int(simNumber)
             yearsData = int(yearsData)
             # hämtar prisdata från OMX index från Yahoo Finance
-            prices = yf.download(stockTicker, period=f'{yearsData}y', interval="1d")['Close']
+            prices = yf.download(stockTicker, period=f'{yearsData}y', interval="1d", threads = False)['Close']
             # ifall data finns och input är korrekt, bryt
             if not prices.empty and isinstance(simHorizon, int)  and isinstance(simNumber, int):
                 break
