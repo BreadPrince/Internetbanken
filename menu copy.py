@@ -147,6 +147,7 @@ def user_dashboard(userId):
                         ranta = float(input("Årlig ränta (%): "))
                         ar = int(input("Antal år: "))
 
+                        # Anropa logic funktion
                         resultat = logic.ranta_pa_ranta(startkapital, ranta, ar)
 
                         print(f"Startkapital (från konto): {startkapital} kr")
