@@ -126,7 +126,13 @@ def user_dashboard(userId):
             valtKonto["balance"] = nyttSaldo
 
             # Spara ändringen
-            accounts.save_accounts(userAccounts)
+            allAccounts = accounts.load_accounts()
+
+            for acc in allAccounts:
+                if acc["user_id"] == userId and acc["account_type"] == valtKonto["account_type"]:
+                    acc["balance"] = nyttSaldo
+
+            accounts.save_accounts(allAccounts)
 
             print("\nTransaktion genomförd")
             print(f"Nytt saldo: {round(nyttSaldo, 2)} kr")
