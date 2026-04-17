@@ -28,9 +28,10 @@ def user_dashboard(userId):
         print("2. Öppna nytt konto")
         print("3. Insättning och uttag")
         print("4. Visa grafer")
-        print("5. Logga ut")
+        print("5. Sparande utveckling")
+        print("6. Logga ut")
         
-        userChoice = input("Välj ett alternativ (1-5): ")
+        userChoice = input("Välj ett alternativ (1-6): ")
         
         if userChoice == "1":
             print(f"\nDina aktiva konton")
@@ -134,10 +135,64 @@ def user_dashboard(userId):
             # Updaterar när någon skrivit denna delen av koden
             primitiv_börs.simulate_stock()
             continue
-            
+
         elif userChoice == "5":
+            while True:
+                print("1. Ränta på ränta")
+                print("2. Tillbaka")
+        
+                saveChoice = input("Välj ett alternativ (1-2): ")
+        
+                if saveChoice == "1":
+                    userAccounts = accounts.get_accounts(userId)
+
+                    # Filtrera fram endast sparkonton
+                    sparkonton = [konto for konto in userAccounts if konto["account_type"] == "Sparkonto"]
+
+                    if not sparkonton:
+                        print("Du har inga sparkonton")
+                        continue
+
+                    # Visa sparkonton
+                    print("\nDina sparkonton:")
+                    for i, konto in enumerate(sparkonton):
+                        print(f"{i + 1}. Saldo: {konto['balance']} kr")
+
+                    try:
+                        val = int(input("Välj sparkonto: ")) - 1
+
+                        if val < 0 or val >= len(sparkonton):
+                            print("Ogiltigt val")
+                            continue
+
+                        valtKonto = sparkonton[val]
+                        startkapital = float(valtKonto["balance"])
+
+                        ranta = float(input("Årlig ränta (%): "))
+                        ar = int(input("Antal år: "))
+
+                        # Anropa logic funktion
+                        resultat = logic.ranta_pa_ranta(startkapital, ranta, ar)
+
+                        print(f"Startkapital (från konto): {startkapital} kr")
+                        print(f"Ränta: {ranta} %")
+                        print(f"Antal år: {ar}")
+                        print(f"Slutbelopp: {round(resultat, 2)} kr")
+
+                    except:
+                        print("Felaktig inmatning")
+        
+                elif saveChoice == "2":
+                    break
+                else:
+                    print("Ogiltigt val")
+
+            continue
+            
+        elif userChoice == "6":
             print("Loggar ut")
             break
+
         else:
             print("Ogiltigt val, försök igen")
 
