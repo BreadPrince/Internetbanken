@@ -1,3 +1,6 @@
 user_id,account_type,balance
 JH1174,Debitkonto,600.0
 JH1174,Sparkonto,500.0
+EF4587,Debitkonto,0.0
+EF4587,Sparkonto,0.0
+EF4587,Aktiefondkonto,0.0
