@@ -1,16 +1,15 @@
-import time
-startTid = time.time()
 import numpy as np
 from numpy import random
 import matplotlib.pyplot as plt
 import yfinance as yf
 import pandas as pd
 from curl_cffi import requests
+import time
 session = requests.Session(impersonate="chrome")
-
 
 bgColor = 'darkslategray'
 
+# Simulerar börsen/aktiekurs med hjälp av Geometric Brownian Motion (GBM) med kursdata
 def simulate_stock():
     while True:
         stockTicker = '^OMX'
@@ -95,12 +94,21 @@ def simulate_stock():
     plt.axvline(x=lastHistoricalDate, color='indigo', linestyle='--', label='Last Date From Dataset')
     plt.legend()
     plt.title(f"Simulering av {stockTicker} över {simHorizon} år med {simNumber} simuleringar")
+    plt.show()
 
-simulate_stock()
-plt.show()
+# Uppdaterar ISK-kontot samt returnerar dagens procentändring för kursen
+def update_ISK(kontoISK):
+    # OMX indexets ticker symbol
+    stockTicker = '^OMX'
+    # Är börsen öppen?
+    if time.localtime().tm_hour > 9 and time.localtime().tm_hour < 17.5:
+        # Hämtar dagens pris för index/aktie
+        todayPrice = yf.download(stockTicker, period=f'{2}d', interval="1d", threads = False, session = session)['Close']
+        todayPercent = todayPrice.iloc[-1].item()/todayPrice.iloc[-2].item() - 1
+        currency = yf.Ticker(stockTicker).info.get('currency', 'N/A')
+        kontoISK *= (1 + todayPercent)
+        return kontoISK, todayPercent
 
 # dag = calendar.day_name[time.localtime().tm_wday]
 # klockslag = f"{time.localtime().tm_hour}:{time.localtime().tm_min}:{time.localtime().tm_sec}"
 # datum = datetime.datetime.now(zoneinfo.ZoneInfo()).strftime("%Y-%m-%d")
-
-print("Process finished --- %s seconds ---" % (time.time() - startTid))

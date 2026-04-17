@@ -129,3 +129,11 @@ def transfer(user_id, from_account, to_account, amount):
 
     save_accounts(accounts)
     return True
+
+def update_for_ISK(user_id, updatedBalance):
+    accounts = load_accounts()
+    for account in accounts:
+        if account["user_id"] == user_id and account["account_type"] == "Aktiefondkonto":
+            balance = float(account["balance"])
+            account["balance"] = updatedBalance
+    save_accounts(accounts)

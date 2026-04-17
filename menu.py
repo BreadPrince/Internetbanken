@@ -1,8 +1,26 @@
 import Filhantering as filhantering  # Modul för användare och inlogg
 import accounts # Modul för kontotyper och saldon
 import logic # Modul för beräkningar
+import primitiv_börs # Modul för aktiekurser och simuleringar
+import datetime
+
+today = "2026-04-16" #datetime.datetime.now().strftime("%Y-%m-%d")
+lastISKdate = filhantering.read_date()
 
 def user_dashboard(userId):
+
+    # # uppdaterar ISK-kontot när programmet startas, och returnerar dagens procentändring för kursen
+    # for account in accounts.get_accounts(userId):
+    #     print(account["account_type"], account["balance"])
+    #     if account["account_type"] == "Aktiefondkonto" and today != lastISKdate:
+    #         iskChange = primitiv_börs.update_ISK(account["balance"])
+    #         accounts.update_for_ISK(userId, iskChange[0])
+    #         account["balance"] = iskChange[0]
+    #         filhantering.update_date()
+    #         print("Ditt ISK-konto har uppdaterats till " + str(iskChange[0]) + " kr" + "med kursen " + str(iskChange[1]))
+    #     elif account["account_type"] == "Aktiefondkonto" and today == lastISKdate:
+    #         print("Ditt ISK-konto är uppdaterat")
+
     """Meny för inloggad användare"""
     while True:
         print(f"\nInloggad som: {userId}")
@@ -114,8 +132,8 @@ def user_dashboard(userId):
             
         elif userChoice == "4":
             # Updaterar när någon skrivit denna delen av koden
-            print("Den här funktionen (graferna) är under utveckling")
-            pass
+            primitiv_börs.simulate_stock()
+            continue
             
         elif userChoice == "5":
             print("Loggar ut")

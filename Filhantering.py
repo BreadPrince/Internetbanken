@@ -1,6 +1,8 @@
 import csv # för att kunna läsa och skriva i csv filer
 import random # för att kunna generera slumpmässiga ID
+import datetime # för att kunna hantera datum och tid
  
+DATE_FILE = "date.csv" # filnamn för att lagra datum
 
 USERS_FILE = "users.csv" # filnamn för att lagra användardata
 def load_users():
@@ -14,7 +16,6 @@ def load_users():
     except FileNotFoundError:
         return[] # om filen inte finns, returnera en tom lista          
     return users # returnera listan med användarnamn och lösenord
-
 
 def save_users(users):
     with open(USERS_FILE, 'w', newline='', encoding='utf-8') as file: # öppna filen i skrivläge w
@@ -73,3 +74,22 @@ def validate_password(password):
         return "ingen_siffra"
 
     return "valid"
+
+def update_date():
+    try:
+        with open(DATE_FILE, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=["date"])
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            writer.writeheader()
+            writer.writerow({"date": date})
+    except FileNotFoundError:
+        return None
+
+def read_date():
+    try:
+        with open(DATE_FILE, encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                return row["date"]
+    except FileNotFoundError:
+        return None
