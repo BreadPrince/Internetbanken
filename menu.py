@@ -95,6 +95,9 @@ def user_dashboard(userId):
             if val == "1":
                 nyttSaldo = logic.insattning(konto, belopp)
             elif val == "2":
+                if belopp > konto:
+                    print("Otillräckligt saldo")
+                    continue
                 nyttSaldo = logic.uttag(konto, belopp)
             else:
                 print("Ogiltigt val")
