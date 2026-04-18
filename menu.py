@@ -79,12 +79,16 @@ def user_dashboard(userId):
             result = accounts.create_account(userId, accountType, 0)
             if result == "success":
                 print(f"Ett {accountType} har öppnats")
+                wait()
             elif result == "limit":
                 print("Fel: Du har redan nått maxantalet på 3 konton")
+                wait()
             elif result == "duplicate":
                 print(f"Fel: Du har redan ett {accountType}")
+                wait()
             elif result =="invalid":
                 print("Fel: Ogiltig kontotyp")
+                wait()
             
         elif userChoice == "3":
             clear_terminal()
@@ -105,11 +109,13 @@ def user_dashboard(userId):
 
                 if kontoVal < 0 or kontoVal >= len(userAccounts):
                     print("Ogiltigt kontoval")
+                    wait()
                     continue
-
                 valtKonto = userAccounts[kontoVal]
+
             except:
                 print("Ogiltigt val")
+                wait()
                 continue
 
             print("\n1. Insättning")
@@ -120,6 +126,7 @@ def user_dashboard(userId):
                 belopp = float(input("Ange belopp: "))
             except:
                 print("Felaktigt belopp")
+                wait()
                 continue
 
             konto = float(valtKonto["balance"])
@@ -130,10 +137,12 @@ def user_dashboard(userId):
             elif val == "2":
                 if belopp > konto:
                     print("Otillräckligt saldo")
+                    wait()
                     continue
                 nyttSaldo = logic.uttag(konto, belopp)
             else:
                 print("Ogiltigt val")
+                wait()
                 continue
 
             # Uppdatera saldo
@@ -150,13 +159,17 @@ def user_dashboard(userId):
 
             print("\nTransaktion genomförd")
             print(f"Nytt saldo: {round(nyttSaldo, 2)} kr")
+            wait()
             
         elif userChoice == "4":
+            clear_terminal()
             # Updaterar när någon skrivit denna delen av koden
             primitiv_börs.simulate_stock()
+            wait()
             continue
 
         elif userChoice == "5":
+            clear_terminal()
             while True:
                 print("1. Ränta på ränta")
                 print("2. Tillbaka")
@@ -164,6 +177,7 @@ def user_dashboard(userId):
                 saveChoice = input("Välj ett alternativ (1-2): ")
         
                 if saveChoice == "1":
+                    clear_terminal()
                     userAccounts = accounts.get_accounts(userId)
 
                     # Filtrera fram endast sparkonton
@@ -198,9 +212,11 @@ def user_dashboard(userId):
                         print(f"Ränta: {ranta} %")
                         print(f"Antal år: {ar}")
                         print(f"Slutbelopp: {round(resultat, 2)} kr")
+                        wait()
 
                     except:
                         print("Felaktig inmatning")
+                        wait()
         
                 elif saveChoice == "2":
                     break
@@ -237,6 +253,7 @@ def main_menu():
                 user_dashboard(userId)
             else:
                 print("Felaktigt id eller lösenord")
+                wait()
                 
         elif userChoice == "2":
             clear_terminal()
@@ -253,12 +270,16 @@ def main_menu():
                     break # loopen bryts endast när status är valid
                 elif status == "too_short":
                     print("Fel: Lösenordet är för kort")
+                    wait()
                 elif status == "too_long":
                     print("Fel: Lösenordet är för långt")
+                    wait()
                 elif status == "ingen_bokstav":
                     print("Fel: Lösenordet måste innehålla minst en bokstav")
+                    wait()
                 elif status == "ingen_siffra":
                     print("Fel: Lösenordet måste innehålla minst en siffra")
+                    wait()
 
             # Skapar användare och hämtar unikt id
             newId = filhantering.create_user(firstName, lastName, password)
@@ -269,6 +290,7 @@ def main_menu():
             print(f"\nNytt konto skapat. Du kan nu logga in.")
             print(f"Ditt användar-id är: {newId}")
             print("Spara ID:t för framtida inloggning")
+            wait()
 
         elif userChoice == "3":
             clear_terminal()
