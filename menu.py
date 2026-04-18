@@ -3,6 +3,13 @@ import accounts # Modul för kontotyper och saldon
 import logic # Modul för beräkningar
 import primitiv_börs # Modul för aktiekurser och simuleringar
 import datetime
+import os
+
+def clear_terminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def wait():
+    input("\nTryck Enter för att gå tillbaka")
 
 today = "2026-04-16" #datetime.datetime.now().strftime("%Y-%m-%d")
 lastISKdate = filhantering.read_date()
@@ -23,6 +30,7 @@ def user_dashboard(userId):
 
     """Meny för inloggad användare"""
     while True:
+        clear_terminal()
         print(f"\nInloggad som: {userId}")
         print("1. Se konton och saldo")
         print("2. Öppna nytt konto")
@@ -34,6 +42,7 @@ def user_dashboard(userId):
         userChoice = input("Välj ett alternativ (1-6): ")
         
         if userChoice == "1":
+            clear_terminal()
             print(f"\nDina aktiva konton")
 
             # Hämtar data från accounts.py
@@ -47,8 +56,10 @@ def user_dashboard(userId):
                     print(f"Konto: {account['account_type']}")
                     print(f"Saldo: {account['balance']} kr")
                 print("-" * 20)
+            wait()
         
         elif userChoice == "2":
+            clear_terminal()
             print(f"\nÖppna nytt konto")
             print("1. Debitkonto")
             print("2. Sparkonto")
@@ -61,6 +72,7 @@ def user_dashboard(userId):
             elif typeChoice == "3": accountType = "Aktiefondkonto"
             else:
                 print("Ogiltigt val, inget konto skapades")
+                wait()
                 continue
             
             # Ska behålla följande del aktiv om vi ska implementera en maxgräns på 3 konton:
@@ -75,10 +87,12 @@ def user_dashboard(userId):
                 print("Fel: Ogiltig kontotyp")
             
         elif userChoice == "3":
-            userAccounts = accounts.get_accounts(userId)
+            clear_terminal()
 
+            userAccounts = accounts.get_accounts(userId)
             if not userAccounts:
                 print("Du har inga konton")
+                wait()
                 continue
 
             # Visa konton
@@ -205,6 +219,7 @@ def user_dashboard(userId):
 def main_menu():
     """Startmeny för programmet"""
     while True:
+        clear_terminal()
         print("\nVälkommen till din internetbank")
         print("1. Logga in")
         print("2. Skapa konto")
@@ -224,6 +239,7 @@ def main_menu():
                 print("Felaktigt id eller lösenord")
                 
         elif userChoice == "2":
+            clear_terminal()
             firstName = input("Förnamn: ")
             lastName = input("Efternamn: ")
 
@@ -255,6 +271,7 @@ def main_menu():
             print("Spara ID:t för framtida inloggning")
 
         elif userChoice == "3":
+            clear_terminal()
             print("Avslutar programmet. Tack för idag")
             break
         else:
