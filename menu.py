@@ -169,8 +169,8 @@ def user_dashboard(userId):
             continue
 
         elif userChoice == "5":
-            clear_terminal()
             while True:
+                clear_terminal()
                 print("1. Ränta på ränta")
                 print("2. Tillbaka")
         
@@ -185,6 +185,7 @@ def user_dashboard(userId):
 
                     if not sparkonton:
                         print("Du har inga sparkonton")
+                        wait()
                         continue
 
                     # Visa sparkonton
@@ -197,6 +198,7 @@ def user_dashboard(userId):
 
                         if val < 0 or val >= len(sparkonton):
                             print("Ogiltigt val")
+                            wait()
                             continue
 
                         valtKonto = sparkonton[val]
@@ -208,7 +210,7 @@ def user_dashboard(userId):
                         # Anropa logic funktion
                         resultat = logic.ranta_pa_ranta(startkapital, ranta, ar)
 
-                        print(f"Startkapital (från konto): {startkapital} kr")
+                        print(f"\nStartkapital (från konto): {startkapital} kr")
                         print(f"Ränta: {ranta} %")
                         print(f"Antal år: {ar}")
                         print(f"Slutbelopp: {round(resultat, 2)} kr")
@@ -222,6 +224,7 @@ def user_dashboard(userId):
                     break
                 else:
                     print("Ogiltigt val")
+                    wait()
 
             continue
             
@@ -244,6 +247,8 @@ def main_menu():
         userChoice = input("Välj ett alternativ (1-3): ")
         
         if userChoice == "1":
+            clear_terminal()
+            print("Logga in")
             userId = input("Ange användar-id: ")
             password = input("Ange lösenord: ")
             
@@ -257,6 +262,7 @@ def main_menu():
                 
         elif userChoice == "2":
             clear_terminal()
+            print("Skapa nytt konto")
             firstName = input("Förnamn: ")
             lastName = input("Efternamn: ")
 
@@ -298,6 +304,7 @@ def main_menu():
             break
         else:
             print("Ogiltigt val, försök igen")
+            wait()
 
 if __name__ == "__main__":
     # Startar menyn endast om filen körs direkt och inte vid import
