@@ -4,6 +4,7 @@ import logic # Modul för beräkningar
 import primitiv_börs # Modul för aktiekurser och simuleringar
 import datetime
 import os
+import history
 
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -37,9 +38,10 @@ def user_dashboard(userId):
         print("3. Insättning och uttag")
         print("4. Visa grafer")
         print("5. Sparande utveckling")
-        print("6. Logga ut")
+        print("6. Visa transaktionshistorik")
+        print("7. Logga ut")
         
-        userChoice = input("Välj ett alternativ (1-6): ")
+        userChoice = input("Välj ett alternativ (1-7): ")
         
         if userChoice == "1":
             clear_terminal()
@@ -134,12 +136,14 @@ def user_dashboard(userId):
             # Anropa logic funktion
             if val == "1":
                 nyttSaldo = logic.insattning(konto, belopp)
+                history.add_history(userId, valtKonto["account_type"], belopp, "insättning")
             elif val == "2":
                 if belopp > konto:
                     print("Otillräckligt saldo")
                     wait()
                     continue
                 nyttSaldo = logic.uttag(konto, belopp)
+                history.add_history(userId, valtKonto["account_type"], belopp, "uttag")
             else:
                 print("Ogiltigt val")
                 wait()
@@ -227,8 +231,25 @@ def user_dashboard(userId):
                     wait()
 
             continue
-            
         elif userChoice == "6":
+            clear_terminal()
+            print("Din Transaktionshistorik\n")
+
+            # Hämtar historik från history.py
+            user_history = history.get_history(userId)
+            
+            if not user_history:
+                print("Ingen historik hittades")
+            else:
+                for row in user_history:
+                    print("-" * 30) 
+                    print(f"Tid: {row['time']}")
+                    print(f"Konto: {row['account_type']}")
+                    print(f"Typ: {row['action']}")
+                    print(f"Belopp: {row['amount']} kr")
+                print("-" * 30) 
+            wait()    
+        elif userChoice == "7":
             print("Loggar ut")
             break
 
