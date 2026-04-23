@@ -36,8 +36,8 @@ def user_dashboard(userId):
         print("1. Se konton och saldo")
         print("2. Öppna nytt konto")
         print("3. Insättning och uttag")
-        print("4. Visa grafer")
-        print("5. Sparande utveckling")
+        print("4. Överföringar")
+        print("5. Prognos verktyg")
         print("6. Visa transaktionshistorik")
         print("7. Logga ut")
         
@@ -176,9 +176,10 @@ def user_dashboard(userId):
             while True:
                 clear_terminal()
                 print("1. Ränta på ränta")
-                print("2. Tillbaka")
+                print("2. Börs simulering")
+                print("3. Tillbaka")
         
-                saveChoice = input("Välj ett alternativ (1-2): ")
+                saveChoice = input("Välj ett alternativ (1-3): ")
         
                 if saveChoice == "1":
                     clear_terminal()
@@ -223,8 +224,12 @@ def user_dashboard(userId):
                     except:
                         print("Felaktig inmatning")
                         wait()
-        
+
                 elif saveChoice == "2":
+                    clear_terminal()
+                    primitiv_börs.simulate_stock()
+        
+                elif saveChoice == "3":
                     break
                 else:
                     print("Ogiltigt val")
