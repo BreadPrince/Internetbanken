@@ -13,10 +13,7 @@ bgColor = 'darkslategray'
 def simulate_stock():
     while True:
         stockTicker = '^OMX'
-        yearsData = input("(q för att avsluta) \n Ange antal år av historisk data att använda (ex. 5): ")
-        if yearsData == "q":
-            print("Avslutar programmet.")
-            exit()
+        yearsData = input("Ange antal år av historisk data att använda (ex. 5): ")
         # ber användaren skriva in hur många år att simulera
         simHorizon = input("Ange antal år att simulera: ")
 
