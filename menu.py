@@ -164,11 +164,98 @@ def user_dashboard(userId):
             print("\nTransaktion genomförd")
             print(f"Nytt saldo: {round(nyttSaldo, 2)} kr")
             wait()
-            
+
         elif userChoice == "4":
             clear_terminal()
-            # Updaterar när någon skrivit denna delen av koden
-            primitiv_börs.simulate_stock()
+
+            userAccounts = accounts.get_accounts(userId)
+            if not userAccounts:
+                print("Du har inga konton")
+                wait()
+                continue
+
+            # Visa konton
+            print("\nDina konton:")
+            for i, konto in enumerate(userAccounts):
+                print(f"{i + 1}. {konto['account_type']} - {konto['balance']} kr")
+
+            # Välj frånkonto
+            try:
+                franVal = int(input("Välj konto att föra FRÅN: ")) - 1
+
+                if franVal < 0 or franVal >= len(userAccounts):
+                    print("Ogiltigt val")
+                    wait()
+                    continue
+
+                franKonto = userAccounts[franVal]
+            except:
+                print("Ogiltigt val")
+                wait()
+                continue
+
+            # Välj tillkonto
+            try:
+                tillVal = int(input("Välj konto att föra TILL: ")) - 1
+
+                if tillVal < 0 or tillVal >= len(userAccounts):
+                    print("Ogiltigt val")
+                    wait()
+                    continue
+
+                if tillVal == franVal:
+                    print("Du kan inte överföra till samma konto")
+                    wait()
+                    continue
+
+                tillKonto = userAccounts[tillVal]
+            except:
+                print("Ogiltigt val")
+                wait()
+                continue
+
+            # Ange belopp
+            try:
+                belopp = float(input("Ange belopp: "))
+            except:
+                print("Felaktigt belopp")
+                wait()
+                continue
+
+            franSaldo = float(franKonto["balance"])
+            tillSaldo = float(tillKonto["balance"])
+
+            # Anropa logic funktion
+            nyttFranSaldo, nyttTillSaldo = logic.overforing(franSaldo, tillSaldo, belopp)
+
+            # Om inget ändrades (fel)
+            if nyttFranSaldo == franSaldo and nyttTillSaldo == tillSaldo:
+                wait()
+                continue
+
+            # Uppdatera lokala objekt
+            franKonto["balance"] = nyttFranSaldo
+            tillKonto["balance"] = nyttTillSaldo
+
+            # Spara ändringar
+            allAccounts = accounts.load_accounts()
+
+            for acc in allAccounts:
+                if acc["user_id"] == userId:
+                    if acc["account_type"] == franKonto["account_type"]:
+                        acc["balance"] = nyttFranSaldo
+                    elif acc["account_type"] == tillKonto["account_type"]:
+                        acc["balance"] = nyttTillSaldo
+
+            accounts.save_accounts(allAccounts)
+
+            # Lägg till historik (båda håll)
+            history.add_history(userId, franKonto["account_type"], belopp, "överföring - ut")
+            history.add_history(userId, tillKonto["account_type"], belopp, "överföring - in")
+
+            print("\nÖverföring genomförd")
+            print(f"Nytt saldo ({franKonto['account_type']}): {round(nyttFranSaldo, 2)} kr")
+            print(f"Nytt saldo ({tillKonto['account_type']}): {round(nyttTillSaldo, 2)} kr")
             wait()
             continue
 
