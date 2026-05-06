@@ -181,7 +181,7 @@ def user_dashboard(userId):
 
             # Välj frånkonto
             try:
-                franVal = int(input("Välj konto att föra FRÅN: ")) - 1
+                franVal = int(input("Välj konto att föra från: ")) - 1
 
                 if franVal < 0 or franVal >= len(userAccounts):
                     print("Ogiltigt val")
@@ -196,7 +196,7 @@ def user_dashboard(userId):
 
             # Välj tillkonto
             try:
-                tillVal = int(input("Välj konto att föra TILL: ")) - 1
+                tillVal = int(input("Välj konto att föra till: ")) - 1
 
                 if tillVal < 0 or tillVal >= len(userAccounts):
                     print("Ogiltigt val")
