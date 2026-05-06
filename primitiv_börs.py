@@ -5,27 +5,31 @@ import yfinance as yf
 import pandas as pd
 from curl_cffi import requests
 import time
+
+# skapar en session som imiterar en Chrome-webbläsare för att undvika att blockeras av Yahoo Finance
 session = requests.Session(impersonate="chrome")
 
-bgColor = 'darkslategray'
-
-# Simulerar börsen/aktiekurs med hjälp av Geometric Brownian Motion (GBM) med kursdata
+# simulerar börsen/aktiekurs med hjälp av Geometric Brownian Motion (GBM) med kursdata
 def simulate_stock():
+    # anger bakgrundsfärg för grafen
+    bgColor = 'darkslategray'
+    
+    # loopar tills giltig input ges
     while True:
+        # stockholmsbörsen används för simuleringen
         stockTicker = '^OMX'
         yearsData = input("Ange antal år av historisk data att använda (ex. 5): ")
         # ber användaren skriva in hur många år att simulera
         simHorizon = input("Ange antal år att simulera: ")
-
         # ber användaren skriva hur många utfall ska simuleras
         simNumber = input("Ange antal simuleringar: ")
-
+        # try-except block för att fånga ogiltig input
         try:
             # omvandlar input till int
             simHorizon = int(simHorizon)
             simNumber = int(simNumber)
             yearsData = int(yearsData)
-            # hämtar prisdata från OMX index från Yahoo Finance
+            # hämtar prisdata från OMX-index från Yahoo Finance
             prices = yf.download(stockTicker, period=f'{yearsData}y', interval="1d", threads = False, session = session)['Close']
             # ifall data finns och input är korrekt, bryt
             if not prices.empty and isinstance(simHorizon, int)  and isinstance(simNumber, int):
@@ -44,7 +48,7 @@ def simulate_stock():
     # prices / prices.shift(1) ger prisförändringen i procent mellan varje element
     logReturns = np.log(prices / prices.shift(1)).dropna()
 
-    # startpris från datan
+    # startpris från datan, pris för sista datapunkten
     S0 = prices.iloc[-1].item()
     # antal handelsdagar per år
     simDays = 255
@@ -57,31 +61,34 @@ def simulate_stock():
 
     # antal tidssteg i simuleringen
     numSteps = int(simHorizon/dt)
-
     # gör array av nollor för att lagra simulerade priser i
     S = np.zeros(numSteps)
     # första elementet i arrayen är startpriset
     S[0] = S0
 
+    # genererar slumpade normalfördelade tal för varje tidssteg och simulering
     Z = np.random.standard_normal((numSteps, simNumber))
+    # skapar en array för att lagra prisbanorna, där varje kolumn representerar en simulering
     pricePaths = np.zeros((numSteps+1, simNumber))
+    # första raden i pricePaths är startpriset för alla simuleringar
     pricePaths[0, :] = S0
+    # GBM
     dailyFactors = np.exp((my - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * Z)
  
-    # Simulate stock price using Geometric Brownian Motion
+    # simulerar prisbanorna genom att multiplicera det föregående priset med den dagliga faktorn
     for t in range(1, numSteps+1):
         pricePaths[t, :] = pricePaths[t-1, :] * dailyFactors[t-1, :]
 
+    # plottar de simulerade prisbanorna tillsammans med den historiska datan
     plt.figure(figsize=(12, 6)).set_facecolor(bgColor)
     ax = plt.gca()
     ax.set_facecolor(bgColor)
     historicalPrices = prices.index
     plt.plot(historicalPrices, prices, color = 'blue', label = 'Historical Data')
-
     lastHistoricalDate = historicalPrices[-1]
     futureDates = pd.date_range(start=lastHistoricalDate, periods = numSteps + 1)[1:]
 
-    # Plot price paths with color based on direction (up/down)
+    # plottar simuleringar i rött eller grönt beroende på om priset gick upp eller ner jämfört med startpriset
     for i in range(simNumber):
         if pricePaths[-1, i] > pricePaths[0, i]:
             color = 'lime'  # price went up
@@ -93,7 +100,7 @@ def simulate_stock():
     plt.title(f"Simulering av {stockTicker} över {simHorizon} år med {simNumber} simuleringar")
     plt.show()
 
-# Uppdaterar ISK-kontot samt returnerar dagens procentändring för kursen
+# uppdaterar ISK-kontot samt returnerar dagens procentändring för kursen
 def update_ISK(kontoISK):
     # OMX indexets ticker symbol
     stockTicker = '^OMX'
@@ -105,7 +112,3 @@ def update_ISK(kontoISK):
         currency = yf.Ticker(stockTicker).info.get('currency', 'N/A')
         kontoISK *= (1 + todayPercent)
         return kontoISK, todayPercent
-
-# dag = calendar.day_name[time.localtime().tm_wday]
-# klockslag = f"{time.localtime().tm_hour}:{time.localtime().tm_min}:{time.localtime().tm_sec}"
-# datum = datetime.datetime.now(zoneinfo.ZoneInfo()).strftime("%Y-%m-%d")
