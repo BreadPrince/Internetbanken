@@ -65,7 +65,7 @@ def user_dashboard(userId):
             print(f"\nÖppna nytt konto")
             print("1. Debitkonto")
             print("2. Sparkonto")
-            print("3. Aktiefondkonto")
+            print("3. ISK-konto")
             typeChoice = input("Välj typ (1-3): ")
             
             # Matchar användarens val med rätt kontotyp
