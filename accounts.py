@@ -28,7 +28,7 @@ def save_accounts(accounts):
 def create_account(user_id, account_type, balance):
     accounts = load_accounts()
 
-    allowed_account_types = ["Debitkonto", "Sparkonto", "Aktiefondkonto"]
+    allowed_account_types = ["Debitkonto", "Sparkonto", "Investeringssparkonto"]
 
     if account_type not in allowed_account_types:
         return "invalid"
@@ -66,7 +66,7 @@ def get_accounts(user_id):
 def update_for_ISK(user_id, updatedBalance):
     accounts = load_accounts()
     for account in accounts:
-        if account["user_id"] == user_id and account["account_type"] == "Aktiefondkonto":
+        if account["user_id"] == user_id and account["account_type"] == "Investeringssparkonto":
             balance = float(account["balance"])
             account["balance"] = updatedBalance
     save_accounts(accounts)

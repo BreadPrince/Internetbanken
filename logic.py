@@ -1,3 +1,5 @@
+import primitiv_börs
+
 #Ränta på ränta
 def ranta_pa_ranta(startkapital, ranta, ar):
     """
@@ -5,8 +7,13 @@ def ranta_pa_ranta(startkapital, ranta, ar):
     ranta: årlig ränta i procent (t.ex. 5 för 5%)
     ar: antal år (t.ex. 10)
     """
-    slutbelopp = startkapital * (1 + ranta / 100) ** ar
-    return slutbelopp
+    rantaGraf = []
+    for i in range(ar):
+        rantaGraf.append(startkapital)
+        startkapital += startkapital * (ranta / 100)
+    return rantaGraf
+
+primitiv_börs.graf_för_ränta(ranta_pa_ranta(10000, 15, 10), 15)
 
 #Sätta in på konto
 def insattning(konto, belopp):

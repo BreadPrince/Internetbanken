@@ -12,22 +12,24 @@ def clear_terminal():
 def wait():
     input("\nTryck Enter för att gå tillbaka")
 
-today = "2026-04-16" #datetime.datetime.now().strftime("%Y-%m-%d")
+today = datetime.datetime.now().strftime("%Y-%m-%d")
+
 lastISKdate = filhantering.read_date()
+
+decimalAntal = 2
 
 def user_dashboard(userId):
 
-    # # uppdaterar ISK-kontot när programmet startas, och returnerar dagens procentändring för kursen
-    # for account in accounts.get_accounts(userId):
-    #     print(account["account_type"], account["balance"])
-    #     if account["account_type"] == "Aktiefondkonto" and today != lastISKdate:
-    #         iskChange = primitiv_börs.update_ISK(account["balance"])
-    #         accounts.update_for_ISK(userId, iskChange[0])
-    #         account["balance"] = iskChange[0]
-    #         filhantering.update_date()
-    #         print("Ditt ISK-konto har uppdaterats till " + str(iskChange[0]) + " kr" + "med kursen " + str(iskChange[1]))
-    #     elif account["account_type"] == "Aktiefondkonto" and today == lastISKdate:
-    #         print("Ditt ISK-konto är uppdaterat")
+    # uppdaterar ISK-kontot när programmet startas, och returnerar dagens procentändring för kursen
+    for account in accounts.get_accounts(userId):
+        if account["account_type"] == "Investeringssparkonto" and today != lastISKdate:
+            iskChange = primitiv_börs.update_ISK(account["balance"])
+            accounts.update_for_ISK(userId, iskChange[0])
+            account["balance"] = iskChange[0]
+            filhantering.update_date()
+            print("Ditt ISK-konto har uppdaterats till " + str(round(iskChange[0], decimalAntal)) + " kr" + " med kursen " + str(round(iskChange[1],decimalAntal)))
+        elif account["account_type"] == "Investeringssparkonto" and today == lastISKdate:
+            print("Ditt ISK-konto är uppdaterat")
 
     """Meny för inloggad användare"""
     while True:
@@ -56,7 +58,7 @@ def user_dashboard(userId):
                     # Skriver ut varje konto på egna rader med skilje-streck emellan
                     print("-" * 20)
                     print(f"Konto: {account['account_type']}")
-                    print(f"Saldo: {account['balance']} kr")
+                    print(f"Saldo: {round(account['balance'], decimalAntal)} kr")
                 print("-" * 20)
             wait()
         
@@ -71,7 +73,7 @@ def user_dashboard(userId):
             # Matchar användarens val med rätt kontotyp
             if typeChoice == "1": accountType = "Debitkonto"
             elif typeChoice == "2": accountType = "Sparkonto"
-            elif typeChoice == "3": accountType = "Aktiefondkonto"
+            elif typeChoice == "3": accountType = "Investeringssparkonto"
             else:
                 print("Ogiltigt val, inget konto skapades")
                 wait()
@@ -300,12 +302,12 @@ def user_dashboard(userId):
                         ar = int(input("Antal år: "))
 
                         # Anropa logic funktion
-                        resultat = logic.ranta_pa_ranta(startkapital, ranta, ar)
+                        resultat = primitiv_börs.graf_för_ränta(logic.ranta_pa_ranta(startkapital, ranta, ar), ranta)
 
                         print(f"\nStartkapital (från konto): {startkapital} kr")
                         print(f"Ränta: {ranta} %")
                         print(f"Antal år: {ar}")
-                        print(f"Slutbelopp: {round(resultat, 2)} kr")
+                        print(f"Slutbelopp: {round(resultat[-1], 2)} kr")
                         wait()
 
                     except:

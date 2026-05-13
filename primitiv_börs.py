@@ -112,3 +112,22 @@ def update_ISK(kontoISK):
         currency = yf.Ticker(stockTicker).info.get('currency', 'N/A')
         kontoISK *= (1 + todayPercent)
         return kontoISK, todayPercent
+    
+def graf_för_ränta(grafData, ranta):
+    år = len(grafData)
+    plt.figure(figsize=(12, 6)).set_facecolor('darkslategray')
+    ax = plt.gca()
+    ax.set_facecolor('darkslategray')
+    y_axel = grafData
+    x_axel = np.arange(0, len(grafData) )
+    plt.plot(x_axel, y_axel, label = 'Ränta på ränta', color = 'lime')
+    plt.plot(0, grafData[0], marker='o', markersize=8, color='white', label='Startkapital')
+    plt.annotate(f'Startkapital: \n{round(grafData[0], 2)} kr', xy=(0, grafData[0]), 
+        xytext=(0, grafData[0]*1.1), fontsize=10, color='white')
+    plt.plot(x_axel[-1], y_axel[-1], marker='.', markersize=12, color='white', label='Slutbelopp')
+    plt.annotate(f'Slutbelopp: \n{round(grafData[-1], 2)} kr', xy=(x_axel[-1], grafData[-1]), 
+        xytext=(x_axel[-1]-1, grafData[-1]-1), fontsize=10, color='white')
+    plt.title(f"Ränta på ränta över {år} år med {ranta}% ränta")
+    plt.xlabel("År")
+    plt.ylabel("Belopp")
+    plt.show()
